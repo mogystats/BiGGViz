@@ -24,6 +24,7 @@ BiGGViz is a MATLAB App for interactive visualization and annotation-driven expl
 BiGGViz/
 ├─ README.md
 ├─ VERSION
+├─ LICENSE
 ├─ src/
 │  ├─ BiGGViz.mlapp
 │  ├─ writeNetworkHTML.m
@@ -37,6 +38,8 @@ BiGGViz/
 │  └─ README_examples.md
 ├─ data/
 │  ├─ models/
+│  │  ├─ mat/
+│  │  └─ xml/
 │  └─ annotations/
 └─ doc/
    ├─ GettingStarted.html
@@ -172,4 +175,4 @@ For now, please cite the GitHub repository or the archived release associated wi
 
 ## License
 
-BiGGViz is open-source software. The source code is made available under the MIT License. See the `LICENSE` file for details.
+See the `LICENSE` file for details.
