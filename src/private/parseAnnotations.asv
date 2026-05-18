@@ -1,0 +1,98 @@
+% This code takes the raw input (either a file path to an Excel/CSV file or
+% a pre-loaded MATLAB table, finds the required columns, handles missing
+% data, and ensures the table is ready for the network builder
+
+function cleanTable = parseAnnotations(annotationInput)
+    % Reads and cleans the reaction annotation table
+    % 
+    % Inputs:
+    %   annotationInput - Either a string/char file to an Excel file, or a
+    %   pre-loaded MATLAB table
+    % 
+    % Outputs:
+    %   cleanTable - A standard table with columns: ReactionKey,
+    %   PathwayKey, EnzymeKey, FormulaKey, and centerFC
+
+    arguments
+        annotationInput {mustBeA(annotationInput, ["string", "char", "table"])}
+    end
+
+    %% Load the data
+    if istable(annotationInput)
+        Traw = annotationInput;  % Traw means raw table
+    else
+        % Read Excel
+        if exist(annotationInput, 'file') ~= 2  % 2 means the file exists
+            error('Annotation file not found: %s', annotationInput);
+        end
+        Traw = readtable(annotationInput, 'VariableNamingRule', 'preserve');  % preserve variable names that are not MATLAB identifiers
+    end
+
+    %% Identify necessary columns dynamically
+    % Get all column indices using contains() with IgnoreCase
+    % TODO: Consider removing some requirements
+    rxnCol = find(contains(colNames, "reaction", 'IgnoreCase', true) & ...
+        ~contains(colNames, "formula", 'IgnoreCase', true), 1);
+    
+    enzCol = find(contains(colNames, "enzyme", 'IgnoreCase', true), 1);
+
+    pathCol = find(contains(colNames, "pathway", 'IgnoreCase', true), 1);
+
+    formCol = find(contains(colNames, "reaction formula", 'IgnoreCase', true) | ...
+        contains(colNames, "formula", 'IgnoreCase', true) & ...
+        ~contains(colNames, "symb", 'IgnoreCase', true), 1);
+
+    rxnFormSymCol = find(contains(colNames, "reaction formula symb", 'IgnoreCase', true), 1);
+
+    % Verify that the minimal requirements exist
+    % TODO: Consider updating minimal requirements
+    if isempty(rxnCol) || isempty(pathCol)
+        error('Could not detect "Reaction" and/or "Pathway" columns in the annotation table.');
+    end
+
+    %% Build the cleaned table
+    cleanTable = table();
+
+    % Extract and trim strings
+    cleanTable.ReactionKey = strtrim(string(Traw{:, rxnCol}));  % {} extracts the cell content instead of a sub-table. : takes all rows
+    cleanTable.PathwayKey = strtrim(string(Traw{:, pathCol}));
+
+    % Handle optional string columns
+    if ~isempty(enzCol)
+        cleanTable.EnzymeKey = strtrim(string(Traw{:, enzCol}));
+    else
+        cleanTable.EnzymeKey = repmat("", height(Traw), 1);  % rep("", nrow(Traw)) for 1 column
+    end
+    
+    if ~isempty(formCol)
+        cleanTable.FormulaKey = strtrim(string(Traw{:, formCol}));
+    else
+        cleanTable.FormulaKey = repmat("", height(Traw), 1);
+    end
+
+    if ~isempty(rxnFormSymCol)
+        cleanTable.ReactionFormulaSymbolKey = strtrim(string(Traw{:, rxnFormSymCol}));
+    else
+        cleanTable.ReactionFormulaSymbolKey = repmat("", height(Traw), 1);
+    end
+
+    %% Handle missing values
+    % Replace true missing strings <missing> with empty strings "" so that
+    % HTML JSON encoding doesn't break later
+    targetCols = ["ReactionKey", "PathwayKey", "EnzymeKey", "FormulaKey"];
+    for col = targetCols
+        cleanTable.(col)(ismissing(cleanTable.(col))) = "";
+    end
+
+    %% 5. Remove duplicates
+    nRowsBefore = height(cleanTable);
+    
+    % Keep only unique reactions
+    [~, uniqueIndices] = unique(cleanTable.ReactionKey, 'stable');  % 'stable' keeps the original row order
+    cleanTable = cleanTable(uniqueIndices, :);
+    
+    nRowsRemoved = nRowsBefore - height(cleanTable);
+    
+    if nRowsRemoved > 0
+        warning('Removed %d rows with duplicated ReactionKey from the an')
+   

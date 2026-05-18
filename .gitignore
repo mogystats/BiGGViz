@@ -1,0 +1,55 @@
+# MATLAB settings
+MATLAB/
+
+# Simulink customization cache
+slprj/
+sccprj/
+
+# MATLAB profiler results
+*.prof
+
+# MATLAB scripts
+*.m~
+
+# MEX compiled files
+*.mex*-*-*
+
+# MATLAB toolbox apps
+*.mlappinstall
+*.mltbx
+
+# Simulink and Stateflow
+*.slx*
+*.sldd
+
+# Help search index
+helpsearch*
+
+# Coder output
+codegen/
+
+# Octave
+octave-workspace
+
+
+# Ignore downloaded BiGG model files by default
+data/models/**/*.mat
+data/models/**/*.xml
+data/models/*.mat
+data/models/*.xml
+
+# Keep the model directories visible
+!data/
+!data/models/
+!data/models/mat/
+!data/models/xml/
+
+# Keep selected example models
+!data/models/mat/iAB_RBC_283.mat
+!data/models/mat/e_coli_core.mat
+!data/models/xml/iAB_RBC_283.xml
+!data/models/xml/e_coli_core.xml
+
+GettingStarted_raw.html
+GettingStarted_raw.mlx
+styleGettingStartedHTML.m
