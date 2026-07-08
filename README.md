@@ -4,6 +4,8 @@
 **Authors:** Shu-Liang Yu and Rachael Hageman Blair  
 **Maintainer:** Shu-Liang Yu
 
+**Documentation:** [Getting Started with BiGGViz](https://mogystats.github.io/BiGGViz/)
+
 BiGGViz is a MATLAB App for interactive visualization and annotation-driven exploration of BiGG/COBRA metabolic models. It supports reaction-reaction and metabolite-metabolite network construction, user-supplied annotation overlays, FBA flux visualization, node coloring and sizing, label selection, pathway highlighting, neighborhood exploration, topology-aware filtering, and export to PNG, PDF, interactive HTML, and Cytoscape-ready node/edge tables.
 
 ## Features
@@ -22,28 +24,29 @@ BiGGViz is a MATLAB App for interactive visualization and annotation-driven expl
 
 ```text
 BiGGViz/
-├─ README.md
-├─ VERSION
-├─ LICENSE
-├─ src/
-│  ├─ BiGGViz.mlapp
-│  ├─ writeNetworkHTML.m
-│  ├─ parseAnnotations.m
-│  ├─ buildRxnRxnGraph.m
-│  ├─ buildMetMetGraph.m
-│  └─ assets/
-│     └─ launch.png
-├─ examples/
-│  ├─ makeEcCoreAnnotationTables.m
-│  └─ README_examples.md
-├─ data/
-│  ├─ models/
-│  │  ├─ mat/
-│  │  └─ xml/
-│  └─ annotations/
-└─ doc/
-   ├─ GettingStarted.html
-   └─ figures/
+|-- README.md
+|-- VERSION
+|-- LICENSE
+|-- src/
+|   |-- BiGGViz.mlapp
+|   |-- writeNetworkHTML.m
+|   |-- parseAnnotations.m
+|   |-- buildRxnRxnGraph.m
+|   |-- buildMetMetGraph.m
+|   `-- assets/
+|       `-- launch.png
+|-- examples/
+|   |-- makeEcCoreAnnotationTables.m
+|   `-- README_examples.md
+|-- data/
+|   |-- models/
+|   |   |-- mat/
+|   |   `-- xml/
+|   `-- annotations/
+`-- docs/
+    |-- index.html
+    |-- GettingStarted.html
+    `-- figures/
 ```
 
 ## Requirements
@@ -137,15 +140,9 @@ If `NodeSize` is supplied in an annotation table, BiGGViz exposes **Node Size** 
 
 A step-by-step tutorial is provided here:
 
-```text
-doc/GettingStarted.html
-```
+[Getting Started with BiGGViz](https://mogystats.github.io/BiGGViz/)
 
-The editable MATLAB Live Script is:
-
-```text
-doc/GettingStarted.mlx
-```
+The HTML tutorial is stored in this repository at `docs/GettingStarted.html`.
 
 The tutorial demonstrates workflows using the `iAB_RBC_283` red blood cell model and the `e_coli_core` model with user-supplied reaction and metabolite annotation tables.
 
