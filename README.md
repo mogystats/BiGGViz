@@ -37,6 +37,8 @@ BiGGViz/
 |       `-- launch.png
 |-- examples/
 |   |-- makeEcCoreAnnotationTables.m
+|   |-- makeRBCOxidativeDemandAnnotationTable.m
+|   |-- makeRBCGTHPiDoseResponseFigure.m
 |   `-- README_examples.md
 |-- data/
 |   |-- models/
@@ -102,6 +104,15 @@ run('examples/makeEcCoreAnnotationTables.m')
 ```
 
 This creates reaction and metabolite annotation tables under `data/annotations/`.
+
+The manuscript's `iAB_RBC_283` antioxidant-demand case study can be reproduced with:
+
+```matlab
+run('examples/makeRBCOxidativeDemandAnnotationTable.m')
+run('examples/makeRBCGTHPiDoseResponseFigure.m')
+```
+
+The first script creates the condition-specific reaction annotation table used in BiGGViz. The second performs the complementary GTHPi dose-response analysis and exports its data and vector figures. See `examples/README_examples.md` for output paths and analysis details.
 
 ## Annotation tables
 

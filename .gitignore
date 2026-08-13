@@ -53,3 +53,6 @@ data/models/*.xml
 GettingStarted_raw.html
 GettingStarted_raw.mlx
 styleGettingStartedHTML.m
+
+# Keep manuscript drafts and submission materials local
+/manuscript/
