@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BiGGViz</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #fafafa; }
+    body { display: flex; align-items: center; justify-content: center; }
+    canvas { display: block; }
+    #error { display: none; padding: 24px; font: 16px Arial, sans-serif; color: #243447; }
+  </style>
+</head>
+<body>
+  <canvas id="page" role="img" aria-label="BiGGViz launch screen"></canvas>
+  <div id="error" role="alert"></div>
+  <!-- A preloaded worker runs locally without a worker URL or network access. -->
+  <script>{{PDF_WORKER}}</script>
+  <script>{{PDF_RENDERER}}</script>
+  <script>
+    (function () {
+      'use strict';
+      var canvas = document.getElementById('page');
+      var page = null;
+      var renderTask = null;
+      var renderQueue = Promise.resolve();
+      var resizeTimer;
+
+      function showError(error) {
+        if (error.name === 'RenderingCancelledException') { return; }
+        canvas.style.display = 'none';
+        var message = document.getElementById('error');
+        message.textContent = 'Unable to display assets/launch.pdf: ' + error.message;
+        message.style.display = 'block';
+      }
+
+      function renderPage() {
+        var width = document.documentElement.clientWidth;
+        var height = document.documentElement.clientHeight;
+        if (!page || width < 1 || height < 1) { return; }
+        var base = page.getViewport({ scale: 1 });
+        var scale = Math.min(width / base.width, height / base.height);
+        var viewport = page.getViewport({ scale: scale });
+        var density = window.devicePixelRatio || 1;
+        canvas.width = Math.ceil(viewport.width * density);
+        canvas.height = Math.ceil(viewport.height * density);
+        canvas.style.width = viewport.width + 'px';
+        canvas.style.height = viewport.height + 'px';
+        renderTask = page.render({
+          canvasContext: canvas.getContext('2d'),
+          viewport: viewport,
+          transform: [density, 0, 0, density, 0, 0]
+        });
+        return renderTask.promise;
+      }
+
+      function scheduleRender() {
+        // Serialize renders: PDF.js must not draw to a canvas concurrently.
+        if (renderTask) { renderTask.cancel(); }
+        renderQueue = renderQueue.catch(function (error) {
+          if (error.name !== 'RenderingCancelledException') { throw error; }
+        }).then(renderPage);
+        return renderQueue;
+      }
+
+      window.launchPDFReady = Promise.resolve().then(function () {
+        var binary = atob('{{PDF_BASE64}}');
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) { bytes[i] = binary.charCodeAt(i); }
+        return pdfjsLib.getDocument({ data: bytes, isEvalSupported: false }).promise;
+      }).then(function (pdf) {
+        return pdf.getPage(1);
+      }).then(function (firstPage) {
+        page = firstPage;
+        return scheduleRender();
+      });
+      window.launchPDFReady.catch(showError);
+
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () { scheduleRender().catch(showError); }, 100);
+      });
+    }());
+  </script>
+</body>
+</html>
