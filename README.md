@@ -5,6 +5,7 @@
 **Maintainer:** Shu-Liang Yu
 
 **Documentation:** [Getting Started with BiGGViz](https://mogystats.github.io/BiGGViz/)
+**Video Demo:** (https://www.youtube.com/watch?v=IEYuRfcC-Oo)
 
 BiGGViz is a MATLAB App for interactive visualization and annotation-driven exploration of BiGG/COBRA metabolic models. It supports reaction-reaction and metabolite-metabolite network construction, user-supplied annotation overlays, FBA flux visualization, node coloring and sizing, label selection, pathway highlighting, neighborhood exploration, topology-aware filtering, and export to PNG, PDF, interactive HTML, and Cytoscape-ready node/edge tables.
 
